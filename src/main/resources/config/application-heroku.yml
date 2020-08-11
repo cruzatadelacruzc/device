@@ -1,0 +1,52 @@
+# ===================================================================
+# Spring Boot configuration for the "dev" profile.
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+logging:
+  level:
+    ROOT: INFO
+    com.example.divices: DEBUG
+
+spring:
+  profiles:
+    active: heroku
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: ${DATABASE_URL}
+    username: ${USERNAME_POSTGRES}
+    password: ${PASSWORD_POSTGRES}
+    hikari:
+      pool-name: Hikari-dev
+      auto-commit: false
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+  jpa:
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      #Hibernate can then execute SQL statements in batches, therefore reducing the number of database network roundtrips
+      #between 5 and 30
+      hibernate.jdbc.batch_size: 25
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      #Hibernate can then prevent in-memory pagination when join fetching a child entity collection
+      hibernate.query.fail_on_pagination_over_collection_fetch: true
+      #Hibernate entity queries can then make better use of statement caching and fewer entity queries will have to be compiled while varying the number of parameters passed to the in query clause
+      hibernate.query.in_clause_parameter_padding: true
+server:
+  port: ${PORT}
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
+    min-response-size: 1024
+# ===================================================================
+# Custom properties
+# ===================================================================
+#application:
